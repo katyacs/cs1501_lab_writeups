@@ -44,7 +44,7 @@ class Solution {
 ```
 
 ## Description:
-For this problem, we had to 
+For this problem, we got a matrix containing color values of image pixels. We had to change the color of the starting pixel and the pixels surrounding it that are also the same starting color, essentially filling in a section of color with the provided color. To do this, I used a recursive helper function. Initially
 ## Runtime Analysis: 
 
 ## Space Complexity:
