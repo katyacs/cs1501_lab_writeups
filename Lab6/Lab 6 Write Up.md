@@ -3,51 +3,35 @@
 
 ```java
 class Solution {
-    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
-     //check if starting pixel's color is color, then return
-     if(image[sr][sc] == color)
-        return image;
-     int startColor = image[sr][sc];
-     //get size of matrix
-     int rows = image.length;
-     int cols = image[0].length;
+    public int findJudge(int n, int[][] trust) {
+        if(n == 1)
+            return 1;
+        int[] truster = new int[n +1];
+        int[] trustee = new int[n+1];
+        for(int i = 0; i < trust.length; i++)
+        {
+            int trusterIndex = trust[i][0];
+            truster[trusterIndex]++;
+            int trusteeIndex = trust[i][1];
+            trustee[trusteeIndex]++;
 
-     image[sr][sc] = color;
+        }
 
-     image = floodFill(image, sr+1, sc, startColor,color,rows,cols);
-     image = floodFill(image, sr-1, sc, startColor,color,rows,cols);
-     image = floodFill(image, sr, sc+1, startColor,color,rows,cols);
-     image = floodFill(image, sr, sc-1, startColor,color,rows,cols);
-
-     return image;
-    }
-
-    private int[][] floodFill(int[][] image, int sr, int sc, int startColor, int color, int rows, int cols)
-    {
-        //check if sr and sc are in bounds
-        if(sr > rows-1 || sr < 0 || sc > cols-1 || sc < 0)
-            return image;
-        //check if new pixel is equal to start color, if not return
-        if(image[sr][sc] != startColor)
-            return image;
-
-        image[sr][sc] = color;
-
-        image = floodFill(image, sr+1, sc, startColor,color,rows,cols);
-        image = floodFill(image, sr-1, sc, startColor,color,rows,cols);
-        image = floodFill(image, sr, sc+1, startColor,color,rows,cols);
-        image = floodFill(image, sr, sc-1, startColor,color,rows,cols);
-
-        return image;
+        for(int i = 1; i <= n; i++)
+        {
+            if(truster[i] == 0 && trustee[i] == n -1)
+                return i;
+        }
+        return -1;
     }
 }
 ```
 
 ## Description:
-For this problem, we got a matrix containing color values of image pixels. We had to change the color of the starting pixel and the pixels surrounding it that are also the same starting color, essentially filling in a section of color with the provided color. To do this, I used a recursive helper function. Initially, the main method checks whether the starting pixel already has the target color and returns the image unchanged.Otherwise, it saves the starting color, recolors the starting pixel, and calls the helper on its four neighbors. The helper first checks that the pixel is in bounds and that it still matches the starting color. If either check fails, it returns. If they pass, it recolors the pixel and recursively calls itself on the four neighbors.
+For this problem, we were given n people in a town and a list of trust relationships, where each pair [a,b] means person a trusts person b. We had to find the person who trusts no one and who everyone trusts or return -1 if no such person exists. To do this, I used two counting arrays; one tracking how many people each person trusts and one tracking how many people trust each person. First, I handle the edge case where n is 1, since the only person is automatically the judge. Then I loop through the trust list once, incrementing the truster count for the first person in each pair and the trustee count for the second. Finally, I loop through each person from 1 to n and return the one who trusts nobody (truster count of 0) and is trusted by everyone else (trustee count of n - 1). If no one meets both conditions, I return -1.
 
 ## Runtime Analysis: 
-My program has a runtime of O(n) where n is the number of pixels visited. There is a constant amount of work done on each pixel, so runtime only depends on how many pixels are visited. This could range from one pixel in the best case and every pixel (the entire matrix) in the worst case.
+My program takes O(n + t), where n is the number of people and t is the length of the trust array. Looping through the trust list takes O(t), and the final loop over the people takes O(n).
 
 ## Space Complexity:
-I don't create a new matrix, but my helper method calls take up space. This is also linear O(n) where n is the number of pixels visited by the helper method.
+I created two new arrays the size of n, so space complexity is linear as it is O(2n) which simplifies to O(n).
